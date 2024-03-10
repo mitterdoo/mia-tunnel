@@ -1,0 +1,12 @@
+[Unit]
+Description=miniMIA connection to MIA
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/mia-tunnel/start.sh
+ExecStop=/usr/bin/mia-tunnel/stop.sh
+Restart=on-abort
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
