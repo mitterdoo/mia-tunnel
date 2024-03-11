@@ -15,7 +15,9 @@ import signal
 
 VERSION = "MINIMIA 1.0.0" # max 16 chars
 
-TAILSCALE_IP = mia_ip.txt
+f = open("/usr/bin/mia-tunnel/mia_ip.txt",'r')
+TAILSCALE_IP = f.read().strip()
+f.close()
 
 class GracefulExit():
 	kill = False
