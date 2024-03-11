@@ -1,6 +1,6 @@
 #!/bin/bash
 
-host=mia_ip.txt
+host=$(head -1 /usr/bin/mia-tunnel/mia_ip.txt)
 iptables -t nat -A PREROUTING -p tcp --dport 8096 -j DNAT --to-destination $host:8096
 iptables -t nat -A PREROUTING -p tcp --dport 8200 -j DNAT --to-destination $host:8200
 iptables -t nat -A PREROUTING -p udp --dport 1900 -j DNAT --to-destination $host:1900
@@ -12,3 +12,4 @@ iptables -t nat -A PREROUTING -p tcp --dport 9091 -j DNAT --to-destination $host
 iptables -t nat -A PREROUTING -p tcp --dport 9092 -j DNAT --to-destination $host:9092
 iptables -t nat -A POSTROUTING -o tailscale0 -j MASQUERADE
 python3 /usr/bin/mia-tunnel/main.py
+
