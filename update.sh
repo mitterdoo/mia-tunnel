@@ -24,13 +24,13 @@ echo "Checking for updates..." >> $log
 update=$(git -C $install_dir fetch --dry-run)
 
 if [ -z $update ]; then
-	echo "No update found. Exiting..." >> $log
+	echo "No update found." >> $log
 	#update is not required
 	exit
 fi
 
 echo "Update found!" >> $log
-echo "Stopping mia-tunnel service" >> $log
+echo "Stopping mia-tunnel service..." >> $log
 systemctl stop mia.service
 
 git -C $install_dir pull >> $log
