@@ -21,7 +21,7 @@ fi
 
 echo "Checking for updates..." >> $log
 #check for updates
-update=$(git -C $install_dir fetch --dry-run)
+update=$(git -C $install_dir fetch --dry-run 2>&1)
 
 if [ -z $update ]; then
 	echo "No update found." >> $log
