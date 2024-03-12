@@ -1,24 +1,40 @@
 #Automatic updates for minimia
 
-if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
-  exit
+install_dir="/usr/bin/mia-tunnel"
+log="${install_dir}/log"
+date=$(date +%D)
+time=$(date +%r)
+
+if ! test -f $log; then
+	touch $log
 fi
 
+echo "miniMIA Update Script" > $log
+echo "${date} ${time}" >> $log
+printf "\n\n" >> $log
+
+
+if [ "$EUID" -ne 0 ]; then 
+	echo "Script was not ran as root! Exiting..." >> $log
+	exit
+fi
+
+echo "Checking for updates..." >> $log
 #check for updates
-update=$(git fetch --dry-run)
+update=$(git -C $install_dir fetch --dry-run 2>&1)
 
 if [ -z $update ]; then
-	echo "No update found. Exiting..."
+	echo "No update found." >> $log
 	#update is not required
 	exit
 fi
 
-echo "Update found!"
-echo "Stopping mia-tunnel service"
+echo "Update found!" >> $log
+echo "Stopping mia-tunnel service..." >> $log
 systemctl stop mia.service
 
-git pull
+git -C $install_dir pull >> $log
+chmod +x /usr/bin/mia-tunnel/* >> $log
 
-echo "Rebooting!"
+echo "Update Installed. Rebooting!" >> $log
 reboot now
