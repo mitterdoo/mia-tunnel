@@ -34,6 +34,7 @@ echo "Stopping mia-tunnel service..." >> $log
 systemctl stop mia.service
 
 git -C $install_dir pull >> $log
+chmod +x /usr/bin/mia-tunnel/* >> $log
 
 echo "Update Installed. Rebooting!" >> $log
 reboot now
