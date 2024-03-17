@@ -33,6 +33,7 @@ echo "Update found!" >> $log
 echo "Stopping mia-tunnel service..." >> $log
 systemctl stop mia.service
 
+git -C $install_dir reset HEAD --hard
 git -C $install_dir pull >> $log
 chmod +x /usr/bin/mia-tunnel/* >> $log
 
