@@ -13,7 +13,7 @@ import lcd
 import re
 import signal
 
-VERSION = "MINIMIA 1.0.0" # max 16 chars
+VERSION = "MINIMIA 1.1.0" # max 16 chars
 
 f = open("/usr/bin/mia-tunnel/mia_ip.txt",'r')
 TAILSCALE_IP = f.read().strip()
@@ -59,9 +59,9 @@ def verifyConnection():
 	err = result.stderr.strip()
 
 	if len(err) > 0:
-		return False, err
+		return False, err, None
 	elif not IP_PATTERN.search(out):
-		return False, "END0 DISCONNECT"
+		return False, "END0 DISCONNECT", None
 
 	localip = out
 	# local ip is good, check gateway connection
@@ -72,21 +72,21 @@ def verifyConnection():
 	out = result.stdout.strip()
 
 	if len(out) == 0:
-		return False, "NO GATEWAY"
+		return False, "NO GATEWAY", localip
 	elif not isIPSafe(out): # this shouldn't spit out a weird ip... hoping this never happens
-		return False, "@" + str(out)
+		return False, "@" + str(out), localip
 	elif not checkConnectionTo(out):
-		return False, "GATEWAY TIMEOUT"
+		return False, "GATEWAY TIMEOUT", localip
 
 	# gateway good, check internet
 	if not checkConnectionTo('8.8.8.8'):
-		return False, "INTERNET TIMEOUT"
+		return False, "INTERNET TIMEOUT", localip
 
 	# internet good, now check Tailscale machine
 	if not checkConnectionTo(TAILSCALE_IP):
-		return False, "MIA TIMEOUT"
+		return False, "MIA TIMEOUT", localip
 
-	return True, localip
+	return True, localip, None
 if __name__ == '__main__':
 	x = lcd.LCD(*lcd.DEFAULT_LCD)
 	print('Minimia start')
@@ -108,11 +108,14 @@ if __name__ == '__main__':
 				nextCheck = t + 12
 				#x.clear()
 				#x.home()
-				ok, ip = verifyConnection()
+				ok, ip, errIp = verifyConnection()
 				if not ok:
 					print(f'Connection FAILURE: {str(ip)}')
 					x.set("ERROR", ip)
 					x.backlight(1) # turn display on if we found an error
+					if errIp != None:
+						sleep(5)
+						x.set(ip, errIp)
 					times = 0
 				else:
 					print(f'Connection SUCCESS (ip: {str(ip)})')
