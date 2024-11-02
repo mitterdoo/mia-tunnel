@@ -1,8 +1,12 @@
 #!/bin/bash
 
 host=$(head -1 /usr/bin/mia-tunnel/mia_ip.txt)
+iptables -t nat -D PREROUTING -p tcp --dport 5055 -j DNAT --to-destination $host:5055
+iptables -t nat -D PREROUTING -p udp --dport 5055 -j DNAT --to-destination $host:5055
 iptables -t nat -D PREROUTING -p tcp --dport 8096 -j DNAT --to-destination $host:8096
-iptables -t nat -D PREROUTING -p tcp --dport 8096 -j DNAT --to-destination $host:8200
+iptables -t nat -D PREROUTING -p tcp --dport 8200 -j DNAT --to-destination $host:8200
+iptables -t nat -D PREROUTING -p tcp --dport 27015 -j DNAT --to-destination $host:27015
+iptables -t nat -D PREROUTING -p udp --dport 34197 -j DNAT --to-destination $host:34197
 iptables -t nat -D PREROUTING -p tcp --dport 61208 -j DNAT --to-destination $host:61208
 iptables -t nat -D PREROUTING -p udp --dport 1900 -j DNAT --to-destination $host:1900
 iptables -t nat -D PREROUTING -p udp --dport 7359 -j DNAT --to-destination $host:7359
