@@ -13,7 +13,7 @@ import lcd
 import re
 import signal
 
-VERSION = "MINIMIA 1.1.0" # max 16 chars
+VERSION = "MINIMIA 1.2.0" # max 16 chars
 
 f = open("/usr/bin/mia-tunnel/mia_ip.txt",'r')
 TAILSCALE_IP = f.read().strip()
